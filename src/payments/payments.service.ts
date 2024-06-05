@@ -44,7 +44,10 @@ export class PaymentsService {
 
     let event: Stripe.Event;
 
-    const endpointSecret = "whsec_6c10f7d487929e3ce7a371ca33e46518fc44c3b59cf9861cc1b47a321b0bce3f";
+    // testing
+    // const endpointSecret = "whsec_6c10f7d487929e3ce7a371ca33e46518fc44c3b59cf9861cc1b47a321b0bce3f";
+    // real
+    const endpointSecret = "";
     try {
       event = this.stripe.webhooks.constructEvent(req["rawBody"], sig, endpointSecret);
     } catch (err) {
@@ -53,6 +56,14 @@ export class PaymentsService {
     }
 
     console.log({event})
+    switch(event.type) {
+      case 'charge.succeeded':
+        // TODO: llamar a nuestro microservicio
+        console.log(event);
+        break;
+      default:
+        console.log(`Event "${event.type}" no controlado`)
+    }
     return res.status(200).json({sig})
   }
 
