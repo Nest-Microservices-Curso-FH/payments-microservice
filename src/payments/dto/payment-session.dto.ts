@@ -9,6 +9,11 @@ import {
 } from 'class-validator';
 
 export class PaymentsSessionDto {
+
+  @IsString()
+  orderId: string;
+
+
   @IsString()
   currency: string;
 
