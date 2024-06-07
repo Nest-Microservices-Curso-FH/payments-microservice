@@ -1,45 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { envs } from 'src/config';
 import Stripe from 'stripe';
-import { PaymentsSessionDto } from './dto/payment-session.dto';
+import { PaymentSessionDto } from './dto/payment-session.dto';
 import { Request, Response } from 'express';
 
 @Injectable()
 export class PaymentsService {
   private readonly stripe = new Stripe(envs.stripeSecret);
 
-  async createPaymentSession(paymentSessionDto: PaymentsSessionDto) {
+
+  async createPaymentSession(paymentSessionDto: PaymentSessionDto) {
     const { currency, items, orderId } = paymentSessionDto;
 
-    const line_items = items.map((item) => {
+    const lineItems = items.map((item) => {
       return {
         price_data: {
           currency: currency,
           product_data: {
             name: item.name,
           },
-          unit_amount: Math.round(item.price * 100), // 20 - 2000 / 100 * 20.00
+          unit_amount: Math.round(item.price * 100), // 20 dólares 2000 / 100 = 20.00 // 15.0000
         },
         quantity: item.quantity,
       };
     });
 
     const session = await this.stripe.checkout.sessions.create({
-      // Colocar aquí el ID del pedido
+      // Colocar aquí el ID de mi orden
       payment_intent_data: {
         metadata: {
           orderId: orderId
         },
       },
-
-      line_items: line_items,
+      line_items: lineItems,
       mode: 'payment',
       success_url: envs.stripeSeccessUrl,
       cancel_url: envs.stripeCancelUrl,
     });
 
-    return session;
+    // return session;
+    return {
+      cancelUrl: session.cancel_url,
+      successUrl: session.success_url,
+      url: session.url,
+    }
   }
+
 
   async stripeWebhook(req: Request, res: Response) {
     const sig = req.headers['stripe-signature'];

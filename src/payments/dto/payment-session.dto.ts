@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class PaymentsSessionDto {
+export class PaymentSessionDto {
 
   @IsString()
   orderId: string;
@@ -20,11 +20,11 @@ export class PaymentsSessionDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => PaymentsSessionItemDto)
-  items: PaymentsSessionItemDto[];
+  @Type(() => PaymentSessionDtoItemDto)
+  items: PaymentSessionDtoItemDto[];
 }
 
-export class PaymentsSessionItemDto {
+export class PaymentSessionDtoItemDto {
   @IsString()
   name: string;
 
