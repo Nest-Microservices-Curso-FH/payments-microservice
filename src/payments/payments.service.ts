@@ -72,7 +72,7 @@ export class PaymentsService {
       case 'charge.succeeded':
         const chargeSecceded = event.data.object;
         const payload = {
-          stripePaumentId: chargeSecceded.id,
+          stripePaymentId: chargeSecceded.id,
           orderId: chargeSecceded.metadata.orderId,
           receipUrl: chargeSecceded.receipt_url
         };
